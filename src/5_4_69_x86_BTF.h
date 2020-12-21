@@ -119011,4 +119011,6 @@ enum reg_type {
 #pragma clang attribute pop
 #endif
 
+#include "vmlinux_addon.h" /* fix for missing items */
+
 #endif /* __VMLINUX_H__ */

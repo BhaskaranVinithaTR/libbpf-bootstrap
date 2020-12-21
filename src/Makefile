@@ -11,7 +11,16 @@ ARCH := $(shell uname -m | sed 's/x86_64/x86/g; s/aarch64/arm64/g')
 
 $(info    ARCH value is $(ARCH))
 
-APPS = minimal uprobe
+APPS = minimal uprobe softirqs
+
+COMMON_OBJ = \
+        $(OUTPUT)/trace_helpers.o 
+#	$(OUTPUT)/syscall_helpers.o \
+#	$(OUTPUT)/errno_helpers.o \
+#	$(OUTPUT)/map_helpers.o \
+	#
+
+
 
 # Get Clang's default includes on this system. We'll explicitly add these dirs
 # to the includes list when compiling with `-target bpf` because otherwise some
@@ -75,7 +84,7 @@ $(OUTPUT)/%.o: %.c $(wildcard %.h) | $(OUTPUT)
 	$(Q)$(CC) $(CFLAGS) $(INCLUDES) -c $(filter %.c,$^) -o $@
 
 # Build application binary
-$(APPS): %: $(OUTPUT)/%.o $(LIBBPF_OBJ) | $(OUTPUT)
+$(APPS): %: $(OUTPUT)/%.o $(LIBBPF_OBJ) $(COMMON_OBJ) | $(OUTPUT)
 	$(call msg,BINARY,$@)
 	$(Q)$(CC) $(CFLAGS) $^ -lelf -lz -o $@
 
